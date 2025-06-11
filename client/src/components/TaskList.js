@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Button, List, ListItem, ListItemText, Checkbox, Box } from '@mui/material';
 
 const TaskList = ({ onDelete, onComplete }) => {
   const [tasks, setTasks] = useState([]);
 
-  // Función para obtener las tareas desde el backend
   const fetchTasks = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/tasks');
@@ -16,26 +16,32 @@ const TaskList = ({ onDelete, onComplete }) => {
 
   useEffect(() => {
     fetchTasks();
-  }, []); // Se ejecuta solo una vez cuando el componente se monta
+  }, []);
 
   return (
-    <div>
+    <Box sx={{ maxWidth: 600, margin: '0 auto' }}>
       <h2>Lista de Tareas</h2>
-      <ul>
+      <List>
         {tasks.map((task) => (
-          <li key={task._id}>
-            <div>
-              <span>{task.name} - {task.description}</span>
-              <button onClick={() => onComplete(task._id, !task.completed)}>
-                {task.completed ? 'Marcar como Pendiente' : 'Marcar como Completada'}
-              </button>
-              <button onClick={() => onDelete(task._id)}>Eliminar</button>
-            </div>
-          </li>
+          <ListItem key={task._id}>
+            <ListItemText
+              primary={task.name}
+              secondary={task.description}
+              sx={{ textDecoration: task.completed ? 'line-through' : 'none' }}
+            />
+            <Checkbox
+              checked={task.completed}
+              onChange={() => onComplete(task._id, !task.completed)}
+            />
+            <Button variant="contained" color="secondary" onClick={() => onDelete(task._id)}>
+              Eliminar
+            </Button>
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Box>
   );
 };
 
 export default TaskList;
+

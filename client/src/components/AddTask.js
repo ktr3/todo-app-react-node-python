@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { TextField, Button, Box } from '@mui/material';
 
 const AddTask = ({ onAdd }) => {
   const [name, setName] = useState('');
@@ -8,12 +9,12 @@ const AddTask = ({ onAdd }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !description) return; // Evitar enviar tareas vacías
+    if (!name || !description) return;
 
     try {
       const newTask = { name, description };
       const response = await axios.post('http://localhost:5000/api/tasks', newTask);
-      onAdd(response.data); // Actualiza la lista de tareas
+      onAdd(response.data);
       setName('');
       setDescription('');
     } catch (error) {
@@ -22,23 +23,30 @@ const AddTask = ({ onAdd }) => {
   };
 
   return (
-    <div>
+    <Box sx={{ maxWidth: 400, margin: '0 auto' }}>
       <h2>Agregar Nueva Tarea</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
+        <TextField
+          fullWidth
+          label="Nombre de la tarea"
+          variant="outlined"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Nombre de la tarea"
+          margin="normal"
         />
-        <textarea
+        <TextField
+          fullWidth
+          label="Descripción de la tarea"
+          variant="outlined"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Descripción de la tarea"
-        ></textarea>
-        <button type="submit">Agregar</button>
+          margin="normal"
+        />
+        <Button type="submit" variant="contained" color="primary">
+          Agregar
+        </Button>
       </form>
-    </div>
+    </Box>
   );
 };
 
